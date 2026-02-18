@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import Services from './pages/Services'
 import About from './pages/About'
 import Contact from './pages/Contact'
+import Footer from './components/Footer'
 
 function App() {
   return (
@@ -12,7 +13,7 @@ function App() {
       <header>
         <Navbar />
       </header>
-      <main>
+      <main className='container mx-auto'>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/services" element={<Services />} />
@@ -20,6 +21,7 @@ function App() {
           <Route path="/contact" element={<Contact />} />
         </Routes>
       </main>
+      <Footer />
     </>
   )
 }
