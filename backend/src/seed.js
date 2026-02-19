@@ -13,7 +13,7 @@ async function seedAdmin() {
     }
 
     const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash('admin123', saltRounds);
+    const hashedPassword = await bcrypt.hash('secret', saltRounds);
 
     await db.one(
       'INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id, username',
@@ -22,7 +22,7 @@ async function seedAdmin() {
 
     console.log('Admin user berhasil dibuat!');
     console.log('Username: admin');
-    console.log('Password: admin123');
+    console.log('Password: secret');
     process.exit(0);
   } catch (error) {
     console.error('Seed error:', error);
