@@ -1,6 +1,6 @@
 # Frontend – Compro Website
 
-Single Page Application (SPA) buat company profile website. Built with **React 19** + **Vite** + **TailwindCSS 4**.
+Single Page Application (SPA) flr company profile website. Built with **React 19** + **Vite** + **TailwindCSS 4**.
 
 ## Tech Stack
 
@@ -31,7 +31,7 @@ Frontend butuh backend API untuk menampilkan data blog dan handle auth. Pastikan
 
 ### 3. Update Vite proxy (opsional)
 
-Buat development, buka `vite.config.js` dan pastikan proxy redirect ke backend local:
+Untuk development, buka `vite.config.js` dan pastikan proxy redirect ke backend local:
 
 ```js
 server: {
@@ -98,7 +98,7 @@ frontend/src/
 npm run build
 ```
 
-Output build ada di folder `dist/`. File `vercel.json` udah di-config buat handle SPA routing dan proxy API ke backend production.
+Output build ada di folder `dist/`. File `vercel.json` udah di-config untuk handle SPA routing dan proxy API ke backend production.
 
 ## Available Scripts
 
