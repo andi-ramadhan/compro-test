@@ -1,6 +1,7 @@
 import SectionOne from "../components/SectionOne";
 import SectionTwo from "../components/SectionTwo";
 import SectionThree from "../components/SectionThree";
+import SectionFour from "../components/SectionFour";
 
 export default function Home() {
   return (
@@ -15,6 +16,7 @@ export default function Home() {
         <article className="flex flex-col gap-24 mt-12">
           <SectionTwo />
           <SectionThree />
+          <SectionFour />
         </article>
       </main>
     </div>
