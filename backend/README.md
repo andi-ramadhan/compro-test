@@ -28,7 +28,7 @@ npm install
 
 ### 2. Jalanin PostgreSQL pake Docker
 
-Project ini juga menyediakan `docker-compose.yaml` buat spin up PostgreSQL. Tinggal jalanin:
+Project ini juga menyediakan `docker-compose.yaml` untuk spin up PostgreSQL via docker. Tinggal jalanin:
 
 ```bash
 docker compose up -d
@@ -46,7 +46,7 @@ Ini bakal bikin container PostgreSQL dengan config:
 
 ### 3. Setup environment variables
 
-Bikin file `.env` di folder `backend/` (atau edit yang udah ada):
+Buat file `.env` di folder `backend/` (atau edit yang udah ada):
 
 ```env
 # PostgreSQL
@@ -73,7 +73,7 @@ DATABASE_URL=postgres://compro_admin:compro_admin@localhost:5432/compro_db
 npm run migrate up
 ```
 
-Ini bikin tabel `users` dan `blog_data` di database.
+Create tabel `users` dan `blog_data` di database.
 
 ### 5. Seed admin user
 
@@ -81,7 +81,7 @@ Ini bikin tabel `users` dan `blog_data` di database.
 npm run seed
 ```
 
-Ini bikin user admin pertama:
+Create user admin:
 
 | Field    | Value    |
 | -------- | -------- |
@@ -89,7 +89,7 @@ Ini bikin user admin pertama:
 | Password | `secret` |
 
 > [!IMPORTANT]
-> Ganti password admin setelah pertama kali login kalau buat production.
+> Ganti password admin untuk production.
 
 ### 6. Jalanin development server
 
@@ -97,7 +97,7 @@ Ini bikin user admin pertama:
 npm run dev
 ```
 
-Server akan run di `http://localhost:3000`. Coba hit `/api/health` untuk cek apakah udah jalan.
+Server akan run di `http://localhost:3000`. Coba hit `/api/health` untuk cek apakah server udah jalan.
 
 ## Struktur Folder
 
@@ -128,7 +128,4 @@ Setelah server jalan, coba endpoint berikut:
 ```bash
 # Health check
 curl http://localhost:3000/api/health
-
-# Ambil semua blog (public)
-curl http://localhost:3000/api/blogs
 ```
