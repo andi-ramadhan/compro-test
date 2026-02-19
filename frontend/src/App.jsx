@@ -1,14 +1,19 @@
 import './App.css'
 import Navbar from './components/Navbar'
+import { lazy, Suspense } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import Home from './pages/Home'
-import Services from './pages/Services'
-import About from './pages/About'
-import Contact from './pages/Contact'
-import BlogDetail from './pages/BlogDetail'
-import Login from './pages/admin/Login'
-import Dashboard from './pages/admin/Dashboard'
 import Footer from './components/Footer'
+import ScrollToTop from './components/ScrollToTop'
+import LoadingScreen from './components/LoadingScreen'
+
+const Services = lazy(() => import('./pages/Services'))
+const About = lazy(() => import('./pages/About'))
+const Contact = lazy(() => import('./pages/Contact'))
+const BlogDetail = lazy(() => import('./pages/BlogDetail'))
+const Login = lazy(() => import('./pages/admin/Login'))
+const Dashboard = lazy(() => import('./pages/admin/Dashboard'))
+
 
 function App() {
   const location = useLocation();
@@ -21,17 +26,20 @@ function App() {
           <Navbar />
         </header>
       )}
-      <main className={isAdminPage ? '' : 'container mx-auto'}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/blog/:id" element={<BlogDetail />} />
-          <Route path="/admin" element={<Login />} />
-          <Route path="/admin/dashboard" element={<Dashboard />} />
-        </Routes>
-      </main>
+      <Suspense fallback={<LoadingScreen />}>
+        <main className={isAdminPage ? '' : 'container mx-auto'}>
+          <ScrollToTop />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/blog/:id" element={<BlogDetail />} />
+            <Route path="/admin" element={<Login />} />
+            <Route path="/admin/dashboard" element={<Dashboard />} />
+          </Routes>
+        </main>
+      </Suspense>
       {!isAdminPage && <Footer />}
     </>
   )
