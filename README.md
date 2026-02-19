@@ -7,7 +7,7 @@ Website company profile lengkap dengan blog CMS. Dibangun dengan arsitektur **mo
 - **Landing page** – Home, Services, About, Contact
 - **Blog** – Halaman blog dinamis yang kontennya diambil dari database
 - **Admin panel** – Login & dashboard untuk manage konten blog (CRUD)
-- **Auth system** – JWT-based authentication buat proteksi endpoint admin
+- **Auth system** – JWT-based authentication untuk proteksi endpoint admin
 
 ## Arsitektur
 
@@ -47,7 +47,7 @@ Browser → Frontend (React SPA)
 
 ## Setup Local Development
 
-Buat jalanin project ini di local, kamu perlu setup **dua-duanya** (frontend & backend). Ikutin panduan di masing-masing folder:
+Buat jalanin project ini di local, anda perlu setup **dua-duanya** (frontend & backend). Berikut panduan di masing-masing folder:
 
 | Folder       | README                              | Deskripsi                                |
 | ------------ | ----------------------------------- | ---------------------------------------- |
@@ -56,16 +56,14 @@ Buat jalanin project ini di local, kamu perlu setup **dua-duanya** (frontend & b
 
 ### Urutan Setup yang Disarankan
 
-1. **Backend dulu** – karena frontend butuh API buat jalan
+1. **Backend dulu** – karena frontend butuh API
 2. **Frontend** – tinggal `npm install` dan `npm run dev`
 
 ### Prerequisites
 
-Sebelum mulai, pastiin kamu udah punya:
-
 - **Node.js** (v18+)
 - **npm**
-- **Docker & Docker Compose** (buat PostgreSQL local, atau install PostgreSQL local tanpa perlu docker-compose.yml)
+- **Docker & Docker Compose** (untuk standalone PostgreSQL local, tidak perlu docker-compose.yml)
 - **Git**
 
 ## Struktur Backend
@@ -81,7 +79,7 @@ backend/src/
 │   └── authMiddleware.js   → JWT token verification
 ├── database/
 │   └── pg.js               → Koneksi PostgreSQL (pg-promise)
-└── seed.js              → Seeder buat bikin admin user pertama
+└── seed.js              → Seeder untuk create admin user pertama
 ```
 
 ## Struktur Frontend
