@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { FaNewspaper, FaArrowRight, FaFilter } from "react-icons/fa";
+import { FaNewspaper, FaArrowRight, FaFilter, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import axios from "axios";
 
 export default function SectionFour() {
@@ -9,6 +9,7 @@ export default function SectionFour() {
   const [loading, setLoading] = useState(true);
   const [selectedAuthor, setSelectedAuthor] = useState("");
   const [sort, setSort] = useState("newest");
+  const scrollRef = useRef(null);
 
   useEffect(() => {
     fetchBlogs();
@@ -27,6 +28,14 @@ export default function SectionFour() {
       console.error("Error fetching blogs:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const scroll = (direction) => {
+    if (scrollRef.current) {
+      const { scrollLeft, clientWidth } = scrollRef.current;
+      const scrollTo = direction === "left" ? scrollLeft - clientWidth : scrollLeft + clientWidth;
+      scrollRef.current.scrollTo({ left: scrollTo, behavior: "smooth" });
     }
   };
 
@@ -114,42 +123,62 @@ export default function SectionFour() {
             <p className="text-neutral-400">Tidak ada blog dari penulis ini.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {blogs.map((blog) => (
-              <Link
-                key={blog.id}
-                to={`/blog/${blog.id}`}
-                className="group bg-white/60 backdrop-blur-sm rounded-2xl border border-neutral-100 overflow-hidden hover:shadow-xl hover:shadow-emerald-100/50 transition-all duration-300 hover:-translate-y-1"
-              >
-                <div className="h-2 bg-linear-to-r from-emerald-400 to-emerald-600"></div>
+          <div className="relative px-2">
+            {/* nav buttons */}
+            <button
+              onClick={() => scroll("left")}
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white shadow-lg border border-neutral-200 rounded-full flex items-center justify-center text-neutral-600 hover:bg-emerald-500 hover:text-white hover:border-emerald-500 transition-all -ml-2 md:-ml-5"
+            >
+              <FaChevronLeft />
+            </button>
+            <button
+              onClick={() => scroll("right")}
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white shadow-lg border border-neutral-200 rounded-full flex items-center justify-center text-neutral-600 hover:bg-emerald-500 hover:text-white hover:border-emerald-500 transition-all -mr-2 md:-mr-5"
+            >
+              <FaChevronRight />
+            </button>
 
-                <div className="p-6">
-                  <div className="flex items-center gap-2 text-xs text-neutral-400 mb-3">
-                    <span className="bg-emerald-50 text-emerald-600 px-2 py-1 rounded-full font-semibold">
-                      Blog
-                    </span>
-                    <span>{formatDate(blog.created_at)}</span>
+            {/* scroll container */}
+            <div
+              ref={scrollRef}
+              className="flex overflow-x-auto gap-6 md:gap-8 pb-8 snap-x no-scrollbar"
+            >
+              {blogs.map((blog) => (
+                <Link
+                  key={blog.id}
+                  to={`/blog/${blog.id}`}
+                  className="shrink-0 w-[250px] md:w-[320px] snap-start group bg-white/60 backdrop-blur-sm rounded-2xl border border-neutral-100 overflow-hidden hover:shadow-xl hover:shadow-emerald-100/50 transition-all duration-300 hover:-translate-y-1"
+                >
+                  <div className="h-2 bg-linear-to-r from-emerald-400 to-emerald-600"></div>
+
+                  <div className="p-6">
+                    <div className="flex items-center gap-2 text-xs text-neutral-400 mb-3">
+                      <span className="bg-emerald-50 text-emerald-600 px-2 py-1 rounded-full font-semibold">
+                        Blog
+                      </span>
+                      <span>{formatDate(blog.created_at)}</span>
+                    </div>
+
+                    <h3 className="text-lg font-bold text-neutral-900 mb-2 group-hover:text-emerald-600 transition-colors line-clamp-2">
+                      {blog.title}
+                    </h3>
+
+                    <p className="text-neutral-500 text-sm leading-relaxed mb-4 line-clamp-2">
+                      {blog.content}
+                    </p>
+
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-neutral-400">
+                        by {blog.author || "Admin"}
+                      </span>
+                      <span className="text-emerald-600 text-sm font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
+                        Read More <FaArrowRight className="text-xs" />
+                      </span>
+                    </div>
                   </div>
-
-                  <h3 className="text-lg font-bold text-neutral-900 mb-2 group-hover:text-emerald-600 transition-colors line-clamp-2">
-                    {blog.title}
-                  </h3>
-
-                  <p className="text-neutral-500 text-sm leading-relaxed mb-4 line-clamp-2">
-                    {blog.content}
-                  </p>
-
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-neutral-400">
-                      by {blog.author || "Admin"}
-                    </span>
-                    <span className="text-emerald-600 text-sm font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
-                      Read More <FaArrowRight className="text-xs" />
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              ))}
+            </div>
           </div>
         )}
       </div>
