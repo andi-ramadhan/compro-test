@@ -1,20 +1,28 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { FaNewspaper, FaArrowRight } from "react-icons/fa";
+import { FaNewspaper, FaArrowRight, FaFilter } from "react-icons/fa";
 import axios from "axios";
 
 export default function SectionFour() {
   const [blogs, setBlogs] = useState([]);
+  const [authors, setAuthors] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedAuthor, setSelectedAuthor] = useState("");
+  const [sort, setSort] = useState("newest");
 
   useEffect(() => {
     fetchBlogs();
-  }, []);
+  }, [selectedAuthor, sort]);
 
   const fetchBlogs = async () => {
+    setLoading(true);
     try {
-      const response = await axios.get("/api/blogs");
-      setBlogs(response.data.slice(0, 3));
+      const params = { sort };
+      if (selectedAuthor) params.author = selectedAuthor;
+
+      const response = await axios.get("/api/blogs", { params });
+      setBlogs(response.data.blogs.slice(0, 6));
+      setAuthors(response.data.authors);
     } catch (error) {
       console.error("Error fetching blogs:", error);
     } finally {
@@ -31,22 +39,8 @@ export default function SectionFour() {
     });
   };
 
-  const getExcerpt = (content, maxLength = 120) => {
-    if (content.length <= maxLength) return content;
-    return content.substring(0, maxLength) + "...";
-  };
-
-  if (loading) {
-    return (
-      <section className="w-full py-24 px-10">
-        <div className="max-w-6xl mx-auto text-center">
-          <p className="text-neutral-500">Loading blogs...</p>
-        </div>
-      </section>
-    );
-  }
-
-  if (blogs.length === 0) {
+  //hide section if no blogs at all
+  if (!loading && blogs.length === 0 && !selectedAuthor) {
     return null;
   }
 
@@ -55,7 +49,8 @@ export default function SectionFour() {
       <div className="absolute bottom-0 right-0 w-80 h-80 bg-emerald-500/5 rounded-full blur-3xl -mr-40 -mb-40"></div>
 
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-16">
+        {/* header */}
+        <div className="text-center mb-10">
           <div className="w-12 h-12 bg-emerald-500 text-white rounded-2xl flex items-center justify-center text-xl mb-6 mx-auto shadow-lg shadow-emerald-200">
             <FaNewspaper />
           </div>
@@ -65,43 +60,98 @@ export default function SectionFour() {
           <div className="w-20 h-1.5 bg-neutral-950 mx-auto rounded-full"></div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {blogs.map((blog) => (
-            <Link
-              key={blog.id}
-              to={`/blog/${blog.id}`}
-              className="group bg-white/60 backdrop-blur-sm rounded-2xl border border-neutral-100 overflow-hidden hover:shadow-xl hover:shadow-emerald-100/50 transition-all duration-300 hover:-translate-y-1"
+        {/* filter bar */}
+        <div className="flex flex-wrap items-center gap-3 mb-10 justify-center">
+          <div className="flex items-center gap-2 text-neutral-500 text-sm font-semibold">
+            <FaFilter className="text-emerald-500" />
+            Filter:
+          </div>
+
+          {/* sort filter */}
+          <select
+            value={sort}
+            onChange={(e) => setSort(e.target.value)}
+            className="px-4 py-2 rounded-full border border-neutral-200 bg-white text-neutral-700 text-sm font-medium focus:outline-none focus:border-emerald-400 cursor-pointer"
+          >
+            <option value="newest">Terbaru</option>
+            <option value="oldest">Terlama</option>
+          </select>
+
+          {/* author filter */}
+          {authors.length > 0 && (
+            <select
+              value={selectedAuthor}
+              onChange={(e) => setSelectedAuthor(e.target.value)}
+              className="px-4 py-2 rounded-full border border-neutral-200 bg-white text-neutral-700 text-sm font-medium focus:outline-none focus:border-emerald-400 cursor-pointer"
             >
-              <div className="h-2 bg-linear-to-r from-emerald-400 to-emerald-600"></div>
+              <option value="">Semua Penulis</option>
+              {authors.map((author) => (
+                <option key={author} value={author}>
+                  {author}
+                </option>
+              ))}
+            </select>
+          )}
 
-              <div className="p-6">
-                <div className="flex items-center gap-2 text-xs text-neutral-400 mb-3">
-                  <span className="bg-emerald-50 text-emerald-600 px-2 py-1 rounded-full font-semibold">
-                    Blog
-                  </span>
-                  <span>{formatDate(blog.created_at)}</span>
-                </div>
-
-                <h3 className="text-lg font-bold text-neutral-900 mb-2 group-hover:text-emerald-600 transition-colors line-clamp-2">
-                  {blog.title}
-                </h3>
-
-                <p className="text-neutral-500 text-sm leading-relaxed mb-4">
-                  {getExcerpt(blog.content)}
-                </p>
-
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-neutral-400">
-                    by {blog.author || "Admin"}
-                  </span>
-                  <span className="text-emerald-600 text-sm font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
-                    Read More <FaArrowRight className="text-xs" />
-                  </span>
-                </div>
-              </div>
-            </Link>
-          ))}
+          {/* reset filter button*/}
+          {selectedAuthor && (
+            <button
+              onClick={() => setSelectedAuthor("")}
+              className="px-4 py-2 rounded-full bg-neutral-100 hover:bg-neutral-200 text-neutral-600 text-sm font-medium transition-colors"
+            >
+              Reset
+            </button>
+          )}
         </div>
+
+        {/* loading state */}
+        {loading ? (
+          <div className="text-center py-12">
+            <p className="text-neutral-400">Loading...</p>
+          </div>
+        ) : blogs.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-neutral-400">Tidak ada blog dari penulis ini.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {blogs.map((blog) => (
+              <Link
+                key={blog.id}
+                to={`/blog/${blog.id}`}
+                className="group bg-white/60 backdrop-blur-sm rounded-2xl border border-neutral-100 overflow-hidden hover:shadow-xl hover:shadow-emerald-100/50 transition-all duration-300 hover:-translate-y-1"
+              >
+                <div className="h-2 bg-linear-to-r from-emerald-400 to-emerald-600"></div>
+
+                <div className="p-6">
+                  <div className="flex items-center gap-2 text-xs text-neutral-400 mb-3">
+                    <span className="bg-emerald-50 text-emerald-600 px-2 py-1 rounded-full font-semibold">
+                      Blog
+                    </span>
+                    <span>{formatDate(blog.created_at)}</span>
+                  </div>
+
+                  <h3 className="text-lg font-bold text-neutral-900 mb-2 group-hover:text-emerald-600 transition-colors line-clamp-2">
+                    {blog.title}
+                  </h3>
+
+                  <p className="text-neutral-500 text-sm leading-relaxed mb-4 line-clamp-2">
+                    {blog.content}
+                  </p>
+
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-neutral-400">
+                      by {blog.author || "Admin"}
+                    </span>
+                    <span className="text-emerald-600 text-sm font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
+                      Read More <FaArrowRight className="text-xs" />
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
