@@ -8,7 +8,8 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://compro-test-wu1q.vercel.app' /* for my prod, use only localhost:port for development needs */,
+        target: 'https://compro-test-wu1q.vercel.app' /* for my prod, use only localhost:port below for development needs */,
+        // target: 'http://localhost:3000',
         changeOrigin: true,
       },
     },
