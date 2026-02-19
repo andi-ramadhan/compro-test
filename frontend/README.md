@@ -1,6 +1,6 @@
 # Frontend – Compro Website
 
-Single Page Application (SPA) flr company profile website. Built with **React 19** + **Vite** + **TailwindCSS 4**.
+Single Page Application (SPA) for company profile website. Built with **React 19** + **Vite** + **TailwindCSS 4**.
 
 ## Tech Stack
 
