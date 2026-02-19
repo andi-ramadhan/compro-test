@@ -26,7 +26,7 @@ export default function Dashboard() {
   const fetchBlogs = async () => {
     try {
       const response = await axios.get("/api/blogs");
-      setBlogs(response.data);
+      setBlogs(response.data.blogs);
     } catch (error) {
       console.error("Error fetching blogs:", error);
     } finally {
