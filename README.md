@@ -47,7 +47,7 @@ Browser → Frontend (React SPA)
 
 ## Setup Local Development
 
-Buat jalanin project ini di local, anda perlu setup **dua-duanya** (frontend & backend). Berikut panduan di masing-masing folder:
+Untuk local development, anda perlu setup **dua-duanya** (frontend & backend). Berikut panduan di masing-masing folder:
 
 | Folder       | README                              | Deskripsi                                |
 | ------------ | ----------------------------------- | ---------------------------------------- |
@@ -105,7 +105,7 @@ frontend/src/
 │   ├── SectionThree.jsx  → Section ketiga homepage
 │   ├── SectionFour.jsx   → Section keempat homepage (blog preview)
 │   ├── LoadingScreen.jsx → Loading indicator
-│   └── ScrollToTop.jsx   → Auto scroll ke atas pas pindah halaman
+│   └── ScrollToTop.jsx   → Auto scroll ke atas saat pindah halaman
 └── assets/               → Gambar & asset statis
 ```
 
