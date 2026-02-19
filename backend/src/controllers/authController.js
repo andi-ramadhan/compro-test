@@ -9,7 +9,7 @@ exports.register = async (req, res) => {
 
     const existingUser = await db.oneOrNone('SELECT * FROM users WHERE username = $1', [username]);
     if (existingUser) {
-      return res.status(400).json({ message: 'Username sudah dipakai' });
+      return res.status(400).json({ success: false, message: 'Username sudah dipakai' });
     }
 
     const saltRounds = 10;
@@ -21,12 +21,13 @@ exports.register = async (req, res) => {
     );
 
     res.status(201).json({
+      success: true,
       message: 'Register berhasil',
-      user: newUser,
+      data: newUser,
     });
   } catch (error) {
     console.error('Register error:', error);
-    res.status(500).json({ message: 'Terjadi kesalahan server' });
+    res.status(500).json({ success: false, message: 'Terjadi kesalahan server' });
   }
 };
 
@@ -37,12 +38,12 @@ exports.login = async (req, res) => {
 
     const user = await db.oneOrNone('SELECT * FROM users WHERE username = $1', [username]);
     if (!user) {
-      return res.status(401).json({ message: 'Username atau password salah' });
+      return res.status(401).json({ success: false, message: 'Username atau password salah' });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ message: 'Username atau password salah' });
+      return res.status(401).json({ success: false, message: 'Username atau password salah' });
     }
 
     const token = jwt.sign(
@@ -52,11 +53,12 @@ exports.login = async (req, res) => {
     );
 
     res.status(200).json({
+      success: true,
       message: 'Login berhasil',
-      token: token,
+      data: { token },
     });
   } catch (error) {
     console.error('Login error:', error);
-    res.status(500).json({ message: 'Terjadi kesalahan server' });
+    res.status(500).json({ success: false, message: 'Terjadi kesalahan server' });
   }
 };

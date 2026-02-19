@@ -23,15 +23,17 @@ exports.getAllBlogs = async (req, res) => {
     const authors = await db.any('SELECT DISTINCT author FROM blog_data WHERE author IS NOT NULL ORDER BY author ASC');
 
     res.status(200).json({
-      blogs,
-      authors: authors.map(a => a.author),
+      success: true,
+      data: {
+        blogs,
+        authors: authors.map(a => a.author),
+      },
     });
   } catch (error) {
     console.error('Get all blogs error:', error);
-    res.status(500).json({ message: 'Gagal mengambil data blog' });
+    res.status(500).json({ success: false, message: 'Gagal mengambil data blog' });
   }
 };
-
 
 //GET by id
 exports.getBlogById = async (req, res) => {
@@ -40,13 +42,13 @@ exports.getBlogById = async (req, res) => {
     const blog = await db.oneOrNone('SELECT * FROM blog_data WHERE id = $1', [id]);
 
     if (!blog) {
-      return res.status(404).json({ message: 'Blog tidak ditemukan' });
+      return res.status(404).json({ success: false, message: 'Blog tidak ditemukan' });
     }
 
-    res.status(200).json(blog);
+    res.status(200).json({ success: true, data: blog });
   } catch (error) {
     console.error('Get blog by id error:', error);
-    res.status(500).json({ message: 'Gagal mengambil data blog' });
+    res.status(500).json({ success: false, message: 'Gagal mengambil data blog' });
   }
 };
 
@@ -62,12 +64,13 @@ exports.addBlog = async (req, res) => {
     );
 
     res.status(201).json({
+      success: true,
       message: 'Blog berhasil ditambahkan',
-      blog: newBlog,
+      data: newBlog,
     });
   } catch (error) {
     console.error('Add blog error:', error);
-    res.status(500).json({ message: 'Gagal menambahkan blog' });
+    res.status(500).json({ success: false, message: 'Gagal menambahkan blog' });
   }
 };
 
@@ -79,12 +82,7 @@ exports.updateBlog = async (req, res) => {
 
     const existingBlog = await db.oneOrNone('SELECT * FROM blog_data WHERE id = $1', [id]);
     if (!existingBlog) {
-      return res.status(404).json({ message: 'Blog tidak ditemukan' });
-    }
-
-    const slugConflict = await db.oneOrNone('SELECT * FROM blog_data WHERE slug = $1 AND id != $2', [id, id]);
-    if (slugConflict) {
-      return res.status(400).json({ message: 'Blog dengan judul yang mirip sudah ada' });
+      return res.status(404).json({ success: false, message: 'Blog tidak ditemukan' });
     }
 
     const updatedBlog = await db.one(
@@ -93,12 +91,13 @@ exports.updateBlog = async (req, res) => {
     );
 
     res.status(200).json({
+      success: true,
       message: 'Blog berhasil diupdate',
-      blog: updatedBlog,
+      data: updatedBlog,
     });
   } catch (error) {
     console.error('Update blog error:', error);
-    res.status(500).json({ message: 'Gagal mengupdate blog' });
+    res.status(500).json({ success: false, message: 'Gagal mengupdate blog' });
   }
 };
 
@@ -109,14 +108,14 @@ exports.deleteBlog = async (req, res) => {
 
     const existingBlog = await db.oneOrNone('SELECT * FROM blog_data WHERE id = $1', [id]);
     if (!existingBlog) {
-      return res.status(404).json({ message: 'Blog tidak ditemukan' });
+      return res.status(404).json({ success: false, message: 'Blog tidak ditemukan' });
     }
 
     await db.none('DELETE FROM blog_data WHERE id = $1', [id]);
 
-    res.status(200).json({ message: 'Blog berhasil dihapus' });
+    res.status(200).json({ success: true, message: 'Blog berhasil dihapus' });
   } catch (error) {
     console.error('Delete blog error:', error);
-    res.status(500).json({ message: 'Gagal menghapus blog' });
+    res.status(500).json({ success: false, message: 'Gagal menghapus blog' });
   }
 };

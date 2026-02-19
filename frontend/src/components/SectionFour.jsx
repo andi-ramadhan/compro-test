@@ -21,8 +21,8 @@ export default function SectionFour() {
       if (selectedAuthor) params.author = selectedAuthor;
 
       const response = await axios.get("/api/blogs", { params });
-      setBlogs(response.data.blogs.slice(0, 6));
-      setAuthors(response.data.authors);
+      setBlogs(response.data.data.blogs.slice(0, 6));
+      setAuthors(response.data.data.authors);
     } catch (error) {
       console.error("Error fetching blogs:", error);
     } finally {

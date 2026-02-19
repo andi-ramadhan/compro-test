@@ -16,7 +16,7 @@ export default function BlogDetail() {
   const fetchBlog = async () => {
     try {
       const response = await axios.get(`/api/blogs/${id}`);
-      setBlog(response.data);
+      setBlog(response.data.data);
     } catch (error) {
       console.error("Error fetching blog:", error);
       setError("Blog tidak ditemukan");

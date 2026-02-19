@@ -21,7 +21,7 @@ export default function Login() {
       });
 
       //save token to localStorage
-      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("token", response.data.data.token);
 
       //redirect to dashboard
       navigate("/admin/dashboard");
