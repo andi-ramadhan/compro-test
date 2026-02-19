@@ -1,6 +1,6 @@
 # Backend – Compro API
 
-REST API untuk company profile website. Built with **Express 5** and **PostgreSQL** via **pg-promise**.
+REST API untuk company profile website. Built with **ExpressJS** and **PostgreSQL** via **pg-promise**.
 
 ## Tech Stack
 
