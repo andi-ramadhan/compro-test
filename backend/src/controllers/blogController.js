@@ -1,16 +1,37 @@
 const { nanoid } = require('nanoid');
 const { db } = require('../database/pg');
 
-//GET all
+//GET all (support filter: ?author=xxx&sort=newest|oldest)
 exports.getAllBlogs = async (req, res) => {
   try {
-    const blogs = await db.any('SELECT * FROM blog_data ORDER BY created_at DESC');
-    res.status(200).json(blogs);
+    const { author, sort } = req.query;
+
+    let query = 'SELECT * FROM blog_data';
+    const params = [];
+
+    if (author) {
+      params.push(author);
+      query += ` WHERE author = $${params.length}`;
+    }
+
+    const order = sort === 'oldest' ? 'ASC' : 'DESC';
+    query += ` ORDER BY created_at ${order}`;
+
+    const blogs = await db.any(query, params);
+
+    //get distinct author list for filter dropdown
+    const authors = await db.any('SELECT DISTINCT author FROM blog_data WHERE author IS NOT NULL ORDER BY author ASC');
+
+    res.status(200).json({
+      blogs,
+      authors: authors.map(a => a.author),
+    });
   } catch (error) {
     console.error('Get all blogs error:', error);
     res.status(500).json({ message: 'Gagal mengambil data blog' });
   }
 };
+
 
 //GET by id
 exports.getBlogById = async (req, res) => {
